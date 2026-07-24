@@ -1,0 +1,54 @@
+name: LGTM AKS CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy-to-aks:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Mengambil kode dari GitHub
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Trik Rahasia: Langsung colok Kunci Master Kubernetes tanpa login Azure!
+      - name: Set up Kubernetes Context
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      # 3. Menyuntikkan Kunci Storage ke File YAML
+      - name: Inject Storage Key
+        run: |
+          sed -i "s/GANTI_DENGAN_KEY_RAHASIA/${{ secrets.STORAGE_ACCOUNT_KEY }}/g" lgtm-stack/loki/loki-values.yaml
+          sed -i "s/GANTI_DENGAN_KEY_RAHASIA/${{ secrets.STORAGE_ACCOUNT_KEY }}/g" lgtm-stack/mimir/mimir-values.yaml
+          sed -i "s/GANTI_DENGAN_KEY_RAHASIA/${{ secrets.STORAGE_ACCOUNT_KEY }}/g" lgtm-stack/tempo/tempo-values.yaml
+
+      # 4. Menyiapkan Helm & Repositori Grafana
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+      - name: Add Helm Repositories
+        run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+
+      # 5. Mengerahkan Semua Pasukan secara Otomatis!
+      - name: Deploy Applications & LGTM Stack
+        run: |
+          # 5a. Deploy E-Commerce App
+          kubectl apply -f ecommerce-app-go-lgtm-fp/k8s/
+          
+          # 5b. Deploy Loki, Mimir, Tempo, Pyroscope, Grafana
+          helm upgrade --install loki grafana/loki -f lgtm-stack/loki/loki-values.yaml -n monitoring --create-namespace
+          helm upgrade --install mimir grafana/mimir-distributed -f lgtm-stack/mimir/mimir-values.yaml -n monitoring
+          helm upgrade --install tempo grafana/tempo-distributed -f lgtm-stack/tempo/tempo-values.yaml -n monitoring
+          helm upgrade --install pyroscope grafana/pyroscope -f lgtm-stack/pyroscope/pyroscope-values.yaml -n monitoring
+          helm upgrade --install grafana grafana/grafana -f lgtm-stack/grafana-values.yaml -n monitoring
+          
+          # 5c. Deploy Kurir Alloy
+          kubectl create configmap alloy-config --from-file=config.alloy=lgtm-stack/config.alloy -n monitoring -o yaml --dry-run=client | kubectl apply -f -
+          helm upgrade --install alloy grafana/alloy -f lgtm-stack/alloy-values.yaml -n monitoring
