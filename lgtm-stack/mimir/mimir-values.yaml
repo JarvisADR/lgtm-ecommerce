@@ -1,0 +1,90 @@
+mimir:
+  structuredConfig:
+    multitenancy_enabled: true
+    ingest_storage:
+      enabled: true
+    ingester:
+      push_grpc_method_enabled: true
+      ring:
+        replication_factor: 1
+        zone_awareness_enabled: false
+    store_gateway:
+      sharding_ring:
+        replication_factor: 1
+        zone_awareness_enabled: false
+    azure_storage: &azure_storage
+      account_name: lgtmstoragejarvis
+      account_key: "<key>"
+
+    blocks_storage:
+      backend: azure
+      azure:
+        <<: *azure_storage
+        container_name: mimir-blocks
+    ruler_storage:
+      backend: azure
+      azure:
+        <<: *azure_storage
+        container_name: mimir-ruler
+    alertmanager_storage:
+      backend: azure
+      azure:
+        <<: *azure_storage
+        container_name: mimir-alertmanager
+
+minio:
+  enabled: false
+kafka:
+  enabled: true
+rollout_operator:
+  enabled: false
+
+ingester:
+  replicas: 1
+  zoneAwareReplication:
+    enabled: false
+  persistentVolume:
+    enabled: false
+  podDisruptionBudget:
+    enabled: false
+
+store_gateway:
+  replicas: 1
+  zoneAwareReplication:
+    enabled: false
+  persistentVolume:
+    enabled: false
+  podDisruptionBudget:
+    enabled: false
+
+compactor:
+  replicas: 1
+  persistentVolume:
+    enabled: false
+  podDisruptionBudget:
+    enabled: false
+
+distributor:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+
+querier:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+
+query_frontend:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+
+ruler:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+
+alertmanager:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false

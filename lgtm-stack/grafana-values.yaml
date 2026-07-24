@@ -1,0 +1,153 @@
+image:
+  tag: "13.1.0"
+ 
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 3000
+ 
+adminPassword: "admin"
+
+persistence:
+  enabled: true
+  type: pvc
+  storageClassName: managed-csi
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
+ 
+plugins:
+  - grafana-lokiexplore-app
+  - grafana-exploretraces-app
+  - grafana-pyroscope-app
+  - grafana-metricsdrilldown-app
+ 
+env:
+  GF_FEATURE_TOGGLES_ENABLE: "traceToProfiles,traceToMetrics,correlations,exploreLogsAggregatedMetrics"
+  GF_SMTP_PASSWORD__FILE: /etc/secrets/grafana-smtp/password
+  GF_AZURE_MANAGED_IDENTITY_ENABLED: "true"
+  GF_AZURE_MANAGED_IDENTITY_CLIENT_ID: "45e0f2e3-1413-4ba5-b0e0-94d6be33784c"
+ 
+extraSecretMounts:
+  - name: grafana-smtp
+    secretName: grafana-smtp
+    mountPath: /etc/secrets/grafana-smtp
+    readOnly: true
+ 
+grafana.ini:
+  auth:
+    disable_login_form: true
+  auth.anonymous:
+    enabled: true
+    org_role: Admin
+  auth.basic:
+    enabled: false
+  users:
+    allow_sign_up: false
+  feature_toggles:
+    enable: "traceToProfiles traceToMetrics correlations exploreLogsAggregatedMetrics"
+  smtp:
+    enabled: true
+    host: smtp.gmail.com:587
+    user: jarvis.adriel@ag-it.com
+    from_address: jarvis.adriel@ag-it.com
+    from_name: Grafana Alert
+ 
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        uid: loki
+        type: loki
+        access: proxy
+        url: http://loki-gateway.monitoring.svc.cluster.local
+        editable: true
+        jsonData:
+          derivedFields:
+            - name: traceID
+              matcherRegex: traceID=(\w+)
+              url: $${__value.raw}
+              urlDisplayLabel: View Trace in Tempo
+              datasourceUid: tempo
+ 
+      - name: Mimir-Pods-Tenant
+        uid: mimir-pods
+        type: prometheus
+        access: proxy
+        url: http://mimir-gateway.monitoring.svc.cluster.local/prometheus
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+          alertmanagerUid: alertmanager
+        secureJsonData:
+          httpHeaderValue1: pods
+ 
+      - name: Mimir-Nodes-Tenant
+        uid: mimir-nodes
+        type: prometheus
+        access: proxy
+        url: http://mimir-gateway.monitoring.svc.cluster.local/prometheus
+        isDefault: true
+        jsonData:
+          httpHeaderName1: X-Scope-OrgID
+          alertmanagerUid: alertmanager
+        secureJsonData:
+          httpHeaderValue1: nodes
+ 
+      - name: Alertmanager
+        uid: alertmanager
+        type: alertmanager
+        access: proxy
+        url: http://mimir-gateway.monitoring.svc.cluster.local
+        jsonData:
+          implementation: mimir
+          httpHeaderName1: X-Scope-OrgID
+        secureJsonData:
+          httpHeaderValue1: nodes
+ 
+      - name: Tempo
+        uid: tempo
+        type: tempo
+        access: proxy
+        url: http://tempo-gateway.monitoring.svc.cluster.local
+        jsonData:
+          httpMethod: GET
+          httpHeaderName1: X-Scope-OrgID
+          nodeGraph:
+            enabled: true
+          serviceMap:
+            datasourceUid: mimir-nodes
+          tracesToLogsV2:
+            datasourceUid: loki
+            spanStartTimeShift: "-2m"
+            spanEndTimeShift: "2m"
+            filterByTraceID: true
+            filterBySpanID: true
+          tracesToProfilesV2:
+            datasourceUid: pyroscope
+        secureJsonData:
+          httpHeaderValue1: "traces"
+ 
+      - name: Pyroscope
+        uid: pyroscope
+        type: grafana-pyroscope-datasource
+        access: proxy
+        url: http://pyroscope-query-frontend.monitoring.svc.cluster.local:4040
+ 
+      - name: Azure Monitor - VS Enterprise
+        uid: azure-monitor-vse
+        type: grafana-azure-monitor-datasource
+        access: proxy
+        jsonData:
+          cloudName: azuremonitor
+          subscriptionId: "b7a0dc6d-820b-41dc-9168-a0e668ca635e"
+          azureAuthType: msi
+ 
+      - name: Azure Monitor - Observability
+        uid: azure-monitor-obs
+        type: grafana-azure-monitor-datasource
+        access: proxy
+        jsonData:
+          cloudName: azuremonitor
+          subscriptionId: "b7a0dc6d-820b-41dc-9168-a0e668ca635e"
+          azureAuthType: msi

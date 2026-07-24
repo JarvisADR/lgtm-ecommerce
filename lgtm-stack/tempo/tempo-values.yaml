@@ -1,0 +1,134 @@
+fullnameOverride: "tempo"
+multitenancyEnabled: true
+
+tempo:
+  structuredConfig:
+    multitenancy_enabled: true
+
+    storage:
+      trace:
+        backend: azure
+        azure:
+          storage_account_name: "lgtmstoragejarvis"
+          storage_account_key: "<key>"
+          container_name: "tempo-traces"
+
+    metrics_generator:
+      storage:
+        path: /var/tempo/generator/wal
+        remote_write:
+          - url: http://mimir-gateway.monitoring.svc.cluster.local/api/v1/push
+            send_exemplars: true
+            headers:
+              X-Scope-OrgID: "nodes"
+      processor:
+        service_graphs:
+          dimensions:
+            - service.name
+        span_metrics:
+          dimensions:
+            - service.name
+
+    overrides:
+      defaults:
+        metrics_generator:
+          processors:
+            - service-graphs
+            - span-metrics
+
+traces:
+  otlp:
+    grpc:
+      enabled: true
+    http:
+      enabled: true
+
+minio:
+  enabled: false
+rollout_operator:
+  enabled: false
+memcached:
+  enabled: false
+
+gateway:
+  enabled: true
+  replicas: 1
+  service:
+    type: ClusterIP
+
+metricsGenerator:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+distributor:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ingester:
+  replicas: 1
+  zoneAwareReplication:
+    enabled: false
+  persistence:
+    enabled: true
+    size: 10Gi
+  podDisruptionBudget:
+    enabled: false
+  config:
+    replication_factor: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+
+querier:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+queryFrontend:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+compactor:
+  replicas: 1
+  podDisruptionBudget:
+    enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
