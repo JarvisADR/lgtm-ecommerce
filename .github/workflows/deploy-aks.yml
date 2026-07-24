@@ -24,9 +24,9 @@ jobs:
       # 3. Menyuntikkan Kunci Storage ke File YAML
       - name: Inject Storage Key
         run: |
-          sed -i "s/GANTI_DENGAN_KEY_RAHASIA/${{ secrets.STORAGE_ACCOUNT_KEY }}/g" lgtm-stack/loki/loki-values.yaml
-          sed -i "s/GANTI_DENGAN_KEY_RAHASIA/${{ secrets.STORAGE_ACCOUNT_KEY }}/g" lgtm-stack/mimir/mimir-values.yaml
-          sed -i "s/GANTI_DENGAN_KEY_RAHASIA/${{ secrets.STORAGE_ACCOUNT_KEY }}/g" lgtm-stack/tempo/tempo-values.yaml
+          sed -i "s|GANTI_DENGAN_KEY_RAHASIA|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/loki/loki-values.yaml
+          sed -i "s|GANTI_DENGAN_KEY_RAHASIA|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/mimir/mimir-values.yaml
+          sed -i "s|GANTI_DENGAN_KEY_RAHASIA|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/tempo/tempo-values.yaml
 
       # 4. Menyiapkan Helm & Repositori Grafana
       - name: Setup Helm
