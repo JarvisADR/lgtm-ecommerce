@@ -126,7 +126,7 @@ loki:
  
   storage_config:
     azure:
-      account_name: lgtmstoragejarvis
+      account_name: lgtmstorageecommerce
       account_key: "<key>"
       container_name: loki-chunks
     tsdb_shipper:

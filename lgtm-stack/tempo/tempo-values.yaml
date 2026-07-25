@@ -9,7 +9,7 @@ tempo:
       trace:
         backend: azure
         azure:
-          storage_account_name: "lgtmstoragejarvis"
+          storage_account_name: "lgtmstorageecommerce"
           storage_account_key: "<key>"
           container_name: "tempo-traces"
 

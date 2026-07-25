@@ -13,7 +13,7 @@ mimir:
         replication_factor: 1
         zone_awareness_enabled: false
     azure_storage: &azure_storage
-      account_name: lgtmstoragejarvis
+      account_name: lgtmstorageecommerce
       account_key: "<key>"
 
     blocks_storage:

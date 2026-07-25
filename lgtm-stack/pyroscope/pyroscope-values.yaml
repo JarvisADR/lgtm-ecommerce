@@ -1,3 +1,4 @@
+
 pyroscope:
   extraArgs:
     log.level: debug
@@ -11,7 +12,7 @@ pyroscope:
     storage:
       backend: azure
       azure:
-        account_name: lgtmstoragejarvis
+        account_name: lgtmstorageecommerce
         account_key: "<key>"
         container_name: pyroscope-data
         endpoint_suffix: blob.core.windows.net
