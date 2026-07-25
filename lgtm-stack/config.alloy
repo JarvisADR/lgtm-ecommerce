@@ -211,6 +211,9 @@ otelcol.exporter.otlp "tempo" {
       insecure = true
       insecure_skip_verify = true
     }
+    headers = {
+      "X-Scope-OrgID" = "traces"
+    }
   }
 }
 
@@ -233,63 +236,40 @@ prometheus.remote_write "mimir_vm" {
   }
 }
 
-discovery.kubernetes "local_pods" {
+discovery.kubernetes "ecommerce_pods" {
   role = "pod"
+  namespaces {
+    names = ["ecommerce"]
+  }
 }
 
-discovery.relabel "pprof_pods" {
-  targets = discovery.kubernetes.local_pods.targets
-
+discovery.relabel "ecommerce_pyroscope" {
+  targets = discovery.kubernetes.ecommerce_pods.targets
   rule {
-    source_labels = ["__meta_kubernetes_pod_annotation_profiles_grafana_com_scrape"]
-    regex         = "true"
-    action        = "keep"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_pod_container_name"]
-    regex         = "frontend"
-    action        = "drop"
-  }
-  rule {
-    source_labels = ["__address__", "__meta_kubernetes_pod_annotation_profiles_grafana_com_port"]
-    regex         = "([^:]+)(?::\\d+)?;(\\d+)"
-    replacement   = "$1:$2"
-    target_label  = "__address__"
-  }
-  rule {
-    source_labels = ["__meta_kubernetes_namespace"]
-    target_label  = "namespace"
+    action = "keep"
+    source_labels = ["__meta_kubernetes_pod_phase"]
+    regex = "Running"
   }
   rule {
     source_labels = ["__meta_kubernetes_pod_name"]
     target_label  = "pod"
   }
   rule {
-    source_labels = ["__meta_kubernetes_pod_container_name"]
-    target_label  = "service_name"
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    target_label  = "app"
   }
 }
 
-pyroscope.scrape "apps" {
-  targets    = discovery.relabel.pprof_pods.output
+pyroscope.scrape "ecommerce_profile" {
+  targets    = discovery.relabel.ecommerce_pyroscope.output
   forward_to = [pyroscope.write.pyroscope.receiver]
 
   profiling_config {
-    profile.process_cpu {
-      enabled = true
-    }
-    profile.memory {
-      enabled = true
-    }
-    profile.goroutine {
-      enabled = true
-    }
-    profile.block {
-      enabled = true
-    }
-    profile.mutex {
-      enabled = true
-    }
+    profile.goroutine { enabled = true }
+    profile.block { enabled = true }
+    profile.mutex { enabled = true }
+    profile.process_cpu { enabled = true }
+    profile.godeltaprof_memory { enabled = true }
   }
 }
 
@@ -298,6 +278,7 @@ pyroscope.write "pyroscope" {
     url = "http://pyroscope-distributor.monitoring.svc.cluster.local:4040"
   }
 }
+
 
 faro.receiver "frontend" {
   server {
