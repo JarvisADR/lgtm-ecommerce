@@ -212,7 +212,7 @@ otelcol.exporter.otlp "tempo" {
       insecure_skip_verify = true
     }
     headers = {
-      "X-Scope-OrgID" = "traces"
+      "X-Scope-OrgID" = "traces",
     }
   }
 }
