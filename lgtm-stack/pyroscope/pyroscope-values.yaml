@@ -11,8 +11,8 @@ pyroscope:
     storage:
       backend: azure
       azure:
-        storage_account_name: lgtmstorageecommerce
-        storage_account_key: "<key>"
+        account_name: lgtmstorageecommerce
+        account_key: "<key>"
         container_name: pyroscope-data
         endpoint_suffix: blob.core.windows.net
 
