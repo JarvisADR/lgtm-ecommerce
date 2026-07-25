@@ -27,6 +27,7 @@ jobs:
           sed -i "s|<key>|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/loki/loki-values.yaml
           sed -i "s|<key>|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/mimir/mimir-values.yaml
           sed -i "s|<key>|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/tempo/tempo-values.yaml
+          sed -i "s|<key>|${{ secrets.STORAGE_ACCOUNT_KEY }}|g" lgtm-stack/pyroscope/pyroscope-values.yaml
 
       # 4. Menyiapkan Helm & Repositori Grafana
       - name: Setup Helm
