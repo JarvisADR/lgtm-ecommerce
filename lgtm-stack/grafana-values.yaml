@@ -61,7 +61,7 @@ datasources:
         uid: loki
         type: loki
         access: proxy
-        url: http://loki-gateway.monitoring.svc.cluster.local
+        url: http://loki-gateway.monitoring.svc.cluster.local:80
         editable: true
         jsonData:
           derivedFields:
