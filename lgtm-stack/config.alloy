@@ -206,7 +206,7 @@ otelcol.processor.batch "traces" {
 
 otelcol.exporter.otlp "tempo" {
   client {
-    endpoint = "tempo-gateway.monitoring.svc.cluster.local:4317"
+    endpoint = "tempo-distributor.monitoring.svc.cluster.local:4317"
     tls {
       insecure = true
       insecure_skip_verify = true
@@ -234,10 +234,6 @@ prometheus.remote_write "mimir_vm" {
 }
 
 discovery.kubernetes "local_pods" {
-  selectors {
-    field = "spec.nodeName=" + env("NODE_NAME")
-    role  = "pod"
-  }
   role = "pod"
 }
 
