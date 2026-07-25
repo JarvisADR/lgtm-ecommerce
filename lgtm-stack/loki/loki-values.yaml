@@ -123,13 +123,6 @@ loki:
       chunks: loki-chunks
       ruler: loki-chunks
       admin: loki-chunks
- 
-  storage_config:
     azure:
-      account_name: lgtmstorageecommerce
-      account_key: "<key>"
-      container_name: loki-chunks
-    tsdb_shipper:
-      active_index_directory: /var/loki/index
-      cache_location: /var/loki/index_cache
-      cache_ttl: 24h
+      accountName: lgtmstorageecommerce
+      accountKey: "<key>"
