@@ -62,7 +62,7 @@ datasources:
         type: loki
         access: proxy
         url: http://loki-gateway.monitoring.svc.cluster.local:80
-        editable: true
+        editable: false
         jsonData:
           derivedFields:
             - name: traceID
@@ -70,7 +70,7 @@ datasources:
               url: $${__value.raw}
               urlDisplayLabel: View Trace in Tempo
               datasourceUid: tempo
- 
+
       - name: Mimir-Pods-Tenant
         uid: mimir-pods
         type: prometheus
@@ -81,7 +81,7 @@ datasources:
           alertmanagerUid: alertmanager
         secureJsonData:
           httpHeaderValue1: pods
- 
+
       - name: Mimir-Nodes-Tenant
         uid: mimir-nodes
         type: prometheus
@@ -93,7 +93,7 @@ datasources:
           alertmanagerUid: alertmanager
         secureJsonData:
           httpHeaderValue1: nodes
- 
+
       - name: Alertmanager
         uid: alertmanager
         type: alertmanager
@@ -104,7 +104,7 @@ datasources:
           httpHeaderName1: X-Scope-OrgID
         secureJsonData:
           httpHeaderValue1: nodes
- 
+
       - name: Tempo
         uid: tempo
         type: tempo
@@ -127,27 +127,27 @@ datasources:
             datasourceUid: pyroscope
         secureJsonData:
           httpHeaderValue1: "traces"
- 
+
       - name: Pyroscope
         uid: pyroscope
         type: grafana-pyroscope-datasource
         access: proxy
         url: http://pyroscope-query-frontend.monitoring.svc.cluster.local:4040
- 
+
       - name: Azure Monitor - VS Enterprise
         uid: azure-monitor-vse
         type: grafana-azure-monitor-datasource
         access: proxy
         jsonData:
           cloudName: azuremonitor
-          subscriptionId: "b7a0dc6d-820b-41dc-9168-a0e668ca635e"
+          subscriptionId: "97cf980e-b837-4f76-b08b-281e7f7332ba"
           azureAuthType: msi
- 
+
       - name: Azure Monitor - Observability
         uid: azure-monitor-obs
         type: grafana-azure-monitor-datasource
         access: proxy
         jsonData:
           cloudName: azuremonitor
-          subscriptionId: "b7a0dc6d-820b-41dc-9168-a0e668ca635e"
+          subscriptionId: "97cf980e-b837-4f76-b08b-281e7f7332ba"
           azureAuthType: msi
