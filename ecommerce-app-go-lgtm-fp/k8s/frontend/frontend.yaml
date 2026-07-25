@@ -20,7 +20,7 @@ spec:
         - containerPort: 3000
         env:
         - name: VITE_API_URL
-          value: "http://52.139.234.79:8080/api"
+          value: "http://20.187.162.3:8080/api"
         - name: VITE_FARO_COLLECTOR_URL
           value: "http://alloy.monitoring.svc.cluster.local:12347/collect"
         livenessProbe:
