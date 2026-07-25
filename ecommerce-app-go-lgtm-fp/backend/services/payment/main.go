@@ -103,5 +103,9 @@ func main() {
 		json.NewEncoder(w).Encode(payments)
 	})
 
+	observability.StartDebugServer("6060")
+
+	observability.StartDebugServer("6060")
+
 	observability.Run("payment-service", mux)
 }

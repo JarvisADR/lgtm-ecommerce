@@ -66,5 +66,9 @@ func main() {
 		fmt.Fprintf(w, `{"error":"product not found"}`)
 	})
 
+	observability.StartDebugServer("6060")
+
+	observability.StartDebugServer("6060")
+
 	observability.Run("product-service", mux)
 }

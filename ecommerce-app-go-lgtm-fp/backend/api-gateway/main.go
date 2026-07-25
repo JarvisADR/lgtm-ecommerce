@@ -71,5 +71,9 @@ func main() {
 	mux.HandleFunc("/api/payments/", proxyHandler(paymentURL, "/api"))
 	mux.HandleFunc("/api/payments", proxyHandler(paymentURL, "/api"))
 
+	observability.StartDebugServer("6060")
+
+	observability.StartDebugServer("6060")
+
 	observability.Run("api-gateway", corsMiddleware(mux))
 }

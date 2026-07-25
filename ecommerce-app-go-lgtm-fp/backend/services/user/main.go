@@ -152,5 +152,9 @@ func main() {
 		db.Insert(r.Context(), "users", "new_user")
 	})
 
+	observability.StartDebugServer("6060")
+
+	observability.StartDebugServer("6060")
+
 	observability.Run("user-service", mux)
 }

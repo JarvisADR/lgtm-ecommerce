@@ -14,16 +14,18 @@ spec:
         app: payment-service
       annotations:
         profiles.grafana.com/scrape: "true"
-        profiles.grafana.com/port: "8080"
+        profiles.grafana.com/port: "6060"
     spec:
       containers:
       - name: payment-service
         image: jarvisadr/ecommerce-payment:latest
         ports:
         - containerPort: 8080
+        - containerPort: 6060
+        - containerPort: 6060
         env:
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: "alloy.monitoring.svc.cluster.local:4318"
+          value: "http://alloy.monitoring.svc.cluster.local:4318"
         - name: OTEL_EXPORTER_OTLP_PROTOCOL
           value: "http/protobuf"
         - name: OTEL_SERVICE_NAME
