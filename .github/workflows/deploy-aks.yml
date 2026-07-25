@@ -40,7 +40,7 @@ jobs:
       - name: Deploy Applications & LGTM Stack
         run: |
           # 5a. Deploy E-Commerce App
-          kubectl apply -f ecommerce-app-go-lgtm-fp/k8s/
+          kubectl apply -f ecommerce-app-go-lgtm-fp/k8s/ -R
           
           # 5b. Deploy Loki, Mimir, Tempo, Pyroscope, Grafana
           helm upgrade --install loki grafana/loki -f lgtm-stack/loki/loki-values.yaml -n monitoring --create-namespace
