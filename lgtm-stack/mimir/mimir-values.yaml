@@ -12,24 +12,22 @@ mimir:
       sharding_ring:
         replication_factor: 1
         zone_awareness_enabled: false
+    
+    common:
+      storage:
+        backend: azure
+        azure:
+          account_name: lgtmstorageecommerce
+          account_key: "<key>"
 
     blocks_storage:
-      backend: azure
       azure:
-        account_name: lgtmstorageecommerce
-        account_key: "<key>"
         container_name: mimir-blocks
     ruler_storage:
-      backend: azure
       azure:
-        account_name: lgtmstorageecommerce
-        account_key: "<key>"
         container_name: mimir-ruler
     alertmanager_storage:
-      backend: azure
       azure:
-        account_name: lgtmstorageecommerce
-        account_key: "<key>"
         container_name: mimir-alertmanager
 
 minio:
