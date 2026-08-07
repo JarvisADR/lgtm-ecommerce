@@ -37,7 +37,7 @@ minio:
 kafka:
   enabled: true
   persistence:
-    enabled: false
+    enabled: true
   resources:
     requests:
       cpu: 50m
@@ -47,7 +47,7 @@ kafka:
       memory: 256Mi
   zookeeper:
     persistence:
-      enabled: false
+      enabled: true
     resources:
       requests:
         cpu: 50m
