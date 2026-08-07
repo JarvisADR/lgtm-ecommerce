@@ -13,21 +13,20 @@ mimir:
         replication_factor: 1
         zone_awareness_enabled: false
     
-    common:
-      storage:
-        backend: azure
-        azure:
-          account_name: lgtmstorageecommerce1
-          account_key: "<key>"
-
     blocks_storage:
       azure:
+        account_name: lgtmstorageecommerce1
+        account_key: "<key>"
         container_name: mimir-blocks
     ruler_storage:
       azure:
+        account_name: lgtmstorageecommerce1
+        account_key: "<key>"
         container_name: mimir-ruler
     alertmanager_storage:
       azure:
+        account_name: lgtmstorageecommerce1
+        account_key: "<key>"
         container_name: mimir-alertmanager
 
 minio:
