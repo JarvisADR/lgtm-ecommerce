@@ -11,7 +11,7 @@ pyroscope:
     storage:
       backend: azure
       azure:
-        account_name: lgtmstorageecommerce
+        account_name: lgtmstorageecommerce1
         account_key: "<key>"
         container_name: pyroscope-data
         endpoint_suffix: blob.core.windows.net
@@ -135,3 +135,4 @@ minio:
 
 alloy:
   enabled: false
+

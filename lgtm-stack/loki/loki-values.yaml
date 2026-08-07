@@ -124,5 +124,5 @@ loki:
       ruler: loki-chunks
       admin: loki-chunks
     azure:
-      accountName: lgtmstorageecommerce
+      accountName: lgtmstorageecommerce1
       accountKey: "<key>"

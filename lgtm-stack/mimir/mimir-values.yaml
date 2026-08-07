@@ -17,7 +17,7 @@ mimir:
       storage:
         backend: azure
         azure:
-          account_name: lgtmstorageecommerce
+          account_name: lgtmstorageecommerce1
           account_key: "<key>"
 
     blocks_storage:
